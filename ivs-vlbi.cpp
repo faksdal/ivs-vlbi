@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * vlbi-automation.cpp; Created by Jon Leithe based on https://www.geeksforgeeks.org/html-parser-in-c-cpp/
+ * ivs-vlbi.cpp; Created by Jon Leithe
  * Date: 3/5-2024
  *
  * 
