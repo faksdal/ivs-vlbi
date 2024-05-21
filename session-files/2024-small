@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title> IVS VLBI Sessions 
+2024
+
+
+</title>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <meta name="keywords" content=""/>
+    
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400|Source+Sans+Pro:400,600" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" charset="utf-8" media="all" href="/static/css/normalize.css">
+    <link rel="stylesheet" type="text/css" charset="utf-8" media="all" href="/static/css/main.css">
+
+    
+    <script language="javascript" id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=NASA&subagency=GSFC&dclink=true"></script>
+</head>
+<body>
+    <div role="banner">
+        <ul role="navigation">
+            <li> <a href="/">IVS</a></li>
+            <li> <a href="/sessions/">Sessions</a> </li>
+            
+
+<li>  2024
+
+</li>
+
+        </ul>
+    </div>
+    <main>
+        
+<header>
+    <div>
+        <h1 class="title">  Master Schedule 2024
+            
+        </h1>
+    </div>
+    <div role="navigation" id="session-nav">
+        
+        
+        <a href="/sessions/2023/" id="nav-previous" > Previous </a>
+        
+        
+        
+    </div>
+</header>
+
+<section class="full">
+    
+    <table class="sessions responsive">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Code</th>
+                <th>Start</th>
+                <th class="doy">DOY</th>
+                <th class="duration">Dur</th>
+                <th class="stations">Stations</th>
+                <th>DB Code</th>
+                <th>Ops Center</th>
+                <th>Correlator</th>
+                <th>Status</th>
+                <th>Analysis</th>
+            </tr>
+        </thead>
+        
+        <tr class="spacer"><th>January </th> </tr>
+        <tr class="session
+
+
+scheduled
+
+
+
+observed
+
+
+
+correlated
+
+
+
+analyzed
+
+
+"
+            >
+
+	        <td class="session-type"><a href="/descriptions#ivs-r1">IVS-R1</a></td>
+            <td class="session-id"><a href="/sessions/2024/r11136/">R11136</a></td>
+            <td class="start">2024-01-02 17:00 </td>
+            <td class="doy">2</td>
+            <td class="duration">24:00</td>
+            <td class="stations">
+                <ul>
+                    
+                    <li class="station-id ">
+                        <a href="/sessions/stations/ag/">Ag</a>
+                    </li>
+                    
+                    <li class="station-id ">
+                        <a href="/sessions/stations/ht/">Ht</a>
+                    </li>
+                    
+                    <li class="station-id ">
+                        <a href="/sessions/stations/kk/">Kk</a>
+                    </li>
+                    
+                    <li class="station-id ">
+                        <a href="/sessions/stations/kv/">Kv</a>
+                    </li>
+                    
+                    <li class="station-id ">
+                        <a href="/sessions/stations/ma/">Ma</a>
+                    </li>
+                    
+                    <li class="station-id ">
+                        <a href="/sessions/stations/ns/">Ns</a>
+                    </li>
+                    
+                    <li class="station-id ">
+                        <a href="/sessions/stations/on/">On</a>
+                    </li>
+                    
+                    <li class="station-id ">
+                        <a href="/sessions/stations/wz/">Wz</a>
+                    </li>
+                    
+                </ul>
+
+            </td>
+            <td class="db-code"></td>
+            <td class="opscenter completed">NASA</td>
+            <td class="correlator completed">BONN</td>
+            <td class="status released">
+                
+                Released
+                
+            </td>
+            <td class="analysis-center">NASA</td>
+        </tr>
+    </table>
+    
+</section>
+
+    </main>
+    <script src="/static/js/ivs.js"></script>
+    
+    <footer>
+        This page was last updated <time datetime="2024-04-29 13:11 UTC">2024-04-29 13:11 UTC</time>.
+        <br>
+        If these contents are out of date, check the IVS data centers:
+        <a href="https://cddis.nasa.gov/archive/vlbi/ivsdata/aux/2024" target="_blank">CDDIS</a>,
+        <a href="https://ivs.bkg.bund.de/data_dir/vlbi/ivsdata/aux/2024">BKG</a>, and
+        <a href="ftp://ivsopar.obspm.fr/pub/vlbi/ivsdata/aux/2024">OPAR</a>.
+    </footer>
+</body>
+</html>
