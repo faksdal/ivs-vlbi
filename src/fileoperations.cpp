@@ -17,50 +17,94 @@
 //	of the input file.
 //
 //	It also gives an error if opening the files don't work out
-
-fileoperations::fileoperations(string _inputFileName, string _outputFileName)
+fileoperations::fileoperations(string _inputFileName, string _outputFileName, bool _verbose)
 {
+	// assign verbose a value from the caller
+	fo_verbose = _verbose;
+
+	if(_verbose)
+		cout << "[OK]    fileoperations::fileoperations(): Inside constructor." << endl;
 
 	// assign filenames to object variables
-	inputFileName	= _inputFileName;
-	outputFileName	= _outputFileName;
+	fo_inputFileName	= _inputFileName;
+	fo_outputFileName	= _outputFileName;
 
 	// opening input file, the existense of the file is already
 	// checked by the caller
-	inputFileStream.open(inputFileName, ios::ate);
+	// the opening flag ios::ate positions the filepointer at the end of the file
+	fo_inputFileStream.open(fo_inputFileName, ios::ate);
 
-	//inputFileStream;
-	//outputFileStream;
-
+	// check that the file is properly open and that we have
+	// a valid filestream
 	/*
-	// open input file, position the fp at the end
-	inputFile.open(inputFileName, ios::ate);
-	//	if file is not open, flag an error and exit
-	if(!inputFile.is_open()){
-		cout << "fileoperations(): Error opening input file: " << inputFileName << ". Exiting..." << endl;
+		iostate value
+		(member constant)	indicates	functions to check state flags
+		good()	eof()	fail()	bad()	rdstate()
+
+		-------------------------------------------------------------------------------------------------|
+		| goodbit	| No errors (zero value iostate)			| true	| false	| false	| false	| goodbit|
+		-------------------------------------------------------------------------------------------------|
+		| eofbit	| End-of-File reached on input operation	| false	| true	| false	| false	| eofbit |
+		-------------------------------------------------------------------------------------------------|
+		| failbit	| Logical error on i/o operation			| false	| false	| true	| false	| failbit|
+		-------------------------------------------------------------------------------------------------|
+		| badbit	| Read/writing error on i/o operation		| false	| false	| true	| true	| badbit |
+		-------------------------------------------------------------------------------------------------|
+	*/
+	if((fo_inputFileStream.rdstate() & ifstream::failbit ) != 0){
+		cerr << "[ERROR] fileoperations::fileoperations(): Error opening input file: " << fo_inputFileName << ", exiting..." << endl;
 		exit(-1);
 	}
 	else{
-		// get filesize and store it in object variable
-		cout << "fileoperations(): inputFile.tellg(): " << inputFile.tellg() << endl;
-		inputFileSize = inputFile.tellg();
-		// After getting the filesize, set file pointer at beginning of file
-		inputFile.seekg(0, ios::beg);
+		if(fo_verbose)
+			cout << "[OK]    fileoperations::fileoperations(): Input file: " << fo_inputFileName << ", open for reading." << endl;
 	}
-	*/
 
+	// if we've gotten here, it's safe to assume we have a valid filestream.
+	// Let's read the filesize and reset the filepointer to the beginning of the file.
+	fo_inputFileSize = fo_inputFileStream.tellg();
+	if(fo_verbose)
+		cout << "[OK]    fileoperations::fileoperations(): input file size from ifstream.tellg(): " << fo_inputFileSize << " bytes" << endl;
 
-	/*
-	// open the output file
-	outputFile.open(outputFileName);
-	//	if file is not open, flag an error and exit
-	if(!outputFile.is_open()){
-		cout << "fileoperations(): Error opening output file: " << outputFileName << ". Exiting..." << endl;
+	// After getting the filesize, set file pointer at beginning of file
+	fo_inputFileStream.seekg(0, ios::beg);
+	if(fo_inputFileStream.tellg() != 0){
+		cerr << "[ERROR] fileoperations::fileoperations(): Search to start of file failed!" << endl;
 		exit(-1);
 	}
-	*/
+	else{
+		if(fo_verbose)
+			cout << "[OK]    fileoperations::fileoperations(): Search to start of file ok" << endl;
+	}
 
+	// open the output file
+	fo_outputFileStream.open(fo_outputFileName);
+	//	if file is not open, flag an error and exit
+	if(!fo_outputFileStream.is_open()){
+		cerr << "[ERROR] fileoperations::fileoperations(): Error opening output file: " << fo_outputFileName << ", exiting..." << endl;
+		exit(-1);
+	}
 
+	// check that the file is properly open and that we have
+	// a valid filestream
+	if((fo_outputFileStream.rdstate() & ifstream::failbit ) != 0){
+			cerr << "[ERROR] fileoperations::fileoperations(): Error opening output file: " << fo_outputFileName << ", exiting..." << endl;
+			exit(-1);
+	}
+	else{
+		if(fo_verbose)
+			cout << "[OK]    fileoperations::fileoperations(): Output file: " << fo_outputFileName << ", open for writing." << endl;
+	}
+
+	//fo_inputFP	= 0;//fo_inputFileStream.tellg();
+	//fo_outputFP	= 0;//fo_outputFileStream.tellp();
+	fo_inputFilePosition	= fo_inputFileStream.tellg();
+	fo_outputFilePosition	= fo_outputFileStream.tellp();
+
+	if(fo_verbose){
+		cout << "[OK]    fileoperations::fileoperations(): current value of input file pointer: " << fo_inputFilePosition << endl;
+		cout << "[OK]    fileoperations::fileoperations(): current value of output file pointer: " << fo_outputFilePosition << endl;
+	}
 
 
 }
@@ -70,8 +114,11 @@ fileoperations::fileoperations(string _inputFileName, string _outputFileName)
 //	The destructor is in charge of closing the files upon exit
 fileoperations::~fileoperations()
 {
-	// Close files upon exiting
-	//inputFile.close();
-	//outputFile.close();
+	if(fo_verbose)
+		cout << "[OK]    fileoperations::~fileoperations(): closing files before exiting. " << endl;
+
+	// Close filestreams upon exiting...
+	fo_inputFileStream.close();
+	fo_outputFileStream.close();
 
 }

@@ -28,21 +28,26 @@ int main(int argc, char **argv)
 
 	string	inputFileName;
 	string	outputFileName;
-	//string	searchTermsArray[MAXSEARCHTERMS];
 
-	bool	inputFileNameSet, outputFileNameSet, searchTermsSet;
+	string	searchTermsArray[MAXSEARCHTERMS];
+
+	bool	inputFileNameSet;
+	bool	outputFileNameSet;
+	bool	searchTermsSet;
+	bool	verbose;
 
 
-	inputFileNameSet =  outputFileNameSet = searchTermsSet = false;
+	inputFileNameSet =  outputFileNameSet = searchTermsSet = verbose = false;
 
 	//	getopt variables
 	int		c, optionIndex;
 
-	char	*shortOptions = (char*)"I:i:o:h";
+	char	*shortOptions = (char*)"i:o:s:vh";
 	struct option	longOptions[] = {
-		{"include",		required_argument,	NULL,	'I'},
+		{"search",		required_argument,	NULL,	's'},
 		{"input-file",	required_argument,	NULL,	'i'},
 		{"output-file",	required_argument,	NULL,	'o'},
+		{"verbose",		no_argument,		NULL,	'v'},
 		/*{"lat",		required_argument,	NULL,	4},
 		{"lon",		required_argument,	NULL,	5},
 		{"dst",		required_argument,	NULL,	6},
@@ -57,7 +62,7 @@ int main(int argc, char **argv)
 	//	getopt() switch statement
 	while((c = getopt_long(argc, argv, shortOptions, longOptions, &optionIndex)) != -1){
 		switch(c){
-			case 'I':	{
+			case 's':	{
 							//cout << "main: searchTermsArrayIndex: " << searchTermsArrayIndex << endl;
 							/*
 							if(searchTermsArrayIndex >= MAXSEARCHTERMS){
@@ -77,35 +82,45 @@ int main(int argc, char **argv)
 			case 'i':	{
 							// if file don't exists, give a message and exit
 							if(!fileexists(optarg)){
-								cout << "main(): Input file " << optarg << " does not exist!" << endl;
-								cout << "main(): Exiting..." << endl;
+								cout << "[ERROR] main(): Input file " << optarg << " does not exist!" << endl;
+								cout << "[ERROR] main(): Exiting..." << endl;
 								exit(-1);
 							}
 
-							inputFileName = optarg;
-							inputFileNameSet = true;
-							cout << "main(): Input file name set to: " << inputFileName << endl;
+							inputFileName		= optarg;
+							inputFileNameSet	= true;
+
+							if(verbose)
+								cout << "[OK]    main(): Input file name set to: " << inputFileName << endl;
 
 							break;
 						}
 			case 'o':	{
-							// if outputfile exists, present the user with a choice
+							// if outputfile exists, present the user with a choice to overwrite
 							if(fileexists(optarg)){
-								cout << "main(): " << optarg << " exists! Overwrite? y/n: ";
+								cerr << "[ERROR] main(): " << optarg << " exists! Overwrite? y/n: ";
 								char c;
 								cin >> c;
-								if(c == 'n')
+								if(c == 'n' || c == 'N')
 									exit(-1);
 							}
 
-							outputFileName = optarg;
-							outputFileNameSet = true;
-							cout << "main(): Output file name set to: " << outputFileName << endl;
+							outputFileName		= optarg;
+							outputFileNameSet	= true;
+
+							if(verbose)
+								cout << "[OK]    main(): Output file name set to: " << outputFileName << endl;
+
 							break;
 						}
 			case 'h':	{
 							cout << "main(): Provide some useful help to the user!" << endl;
 							exit(1);
+						}
+			case 'v':	{
+							verbose = true;
+							cout << "[OK]    Verbose output!" << endl;
+							break;
 						}
 			default:	{
 							cout << "main: Switch default\n" << endl;
@@ -118,13 +133,32 @@ int main(int argc, char **argv)
 
 
 
-	/*
+
 	//	If all necessities are in place, we can continue to
 	//	create an object-instance and initiate the search...
-	if(inputFileNameSet && outputFileNameSet && searchTermsSet){
+	fileoperations *fo;
+	if(inputFileNameSet && outputFileNameSet){
 
-		cout << "main(): Number of included search terms: " << searchTermsArrayIndex << endl;
+		if(verbose)
+			cout << "[OK]    main(): We have valid filenames!" << endl;
 
+		fo = new fileoperations(inputFileName, outputFileName, verbose);
+		if(!fo){
+			cerr << "[ERROR] main(): failed to create object: fo = new fileoperations(inputFileName, outputFileName, verbose);, exiting..." << endl;
+			exit(-1);
+		}
+
+		//fo->streampos	fo_readInputFile(streampos _newFilePosition, string &_readBuffer);
+		streampos	newFilePosition = 299;
+		string		readBuffer;
+
+		cout << "main(): current input file position: " << fo->fo_getCurrentInputFilePos() << endl;
+		fo->fo_readLineFromInputFile(newFilePosition, readBuffer);
+		cout << "main(): " << readBuffer << endl;
+
+	} // if(inputFileNameSet && outputFileNameSet)
+
+	/*  && searchTermsSet)
 		fileoperations fo(inputFileName, outputFileName, searchTermsArray);
 
 		unsigned long	startPosition = 0L;
@@ -168,7 +202,7 @@ int main(int argc, char **argv)
 	}
 	*/
 
-
+	delete fo;
 
     return(0);
 }

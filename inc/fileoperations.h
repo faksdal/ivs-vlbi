@@ -8,6 +8,7 @@
 #ifndef INC_FILEOPERATIONS_H_
 #define INC_FILEOPERATIONS_H_
 
+#include <math.h>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -18,30 +19,50 @@
 using namespace std;
 
 
+#define MAXSEARCHTERMS	16
+
+
 
 class fileoperations {
 
 private:
-	ifstream	inputFileStream;
-	ofstream	outputFileStream;
+	bool			fo_verbose;
 
-	string		inputFileName;
-	string		outputFileName;
+	string			fo_inputFileName;
+	string			fo_outputFileName;
+
+	ifstream		fo_inputFileStream;
+	ofstream		fo_outputFileStream;
+
+	streampos		fo_inputFileSize;
+	streampos		fo_inputFilePosition;
+	streampos		fo_outputFilePosition;
+
+
+	//streampos	fo_gotoInputPosition(streampos _newFilePosition, ifstream _fo_inputFileStream);
+	//streampos	fo_gotoOutputPosition(streampos _newFilePosition, ofstream _fo_outputFileStream);
 
 
 protected:
 
 public:
-	fileoperations(string _inputFileName, string _outputFileName);
+	fileoperations(string _inputFileName, string _outputFileName, bool _verbose);
 	virtual ~fileoperations();
 
-	/*
-	//inline unsigned long	getInputFileSize(void)			{ return inputFileSize;			}
-	inline unsigned long	getCurrentInputFilePos(void)	{ return currentInputFilePos;	}
-	inline unsigned long	getNumberOfSearchHits(void)		{ return numberOfSearchHits;	}
+	inline unsigned long	fo_getInputFileSize(void)			{ return (unsigned long)fo_inputFileSize; }
+
+	inline streampos		fo_getCurrentInputFilePos(void)		{ return fo_inputFilePosition; }
+	inline streampos		fo_getCurrentOutputFilePos(void)	{ return fo_outputFilePosition;	}
+
+
+
+
+	streampos	fo_readLineFromInputFile(streampos _newFilePosition, string &_readBuffer);
+
+	/*inline unsigned long	getNumberOfSearchHits(void)		{ return numberOfSearchHits;	}
 
 	//inline unsigned long	resetInputFilePos(void)			{ inputFile.seekg(0, ios::beg);	return(inputFile.tellg()); }
-	//inline unsigned long	getCurrentOutputFilePos(void)	{ return currentOutputFilePos;	}
+
 
 	string getOutputFileName(bool _printToScreen);
 	string getInputFileName(bool _printToScreen);
