@@ -28,6 +28,9 @@ class fileoperations {
 private:
 	bool			fo_verbose;
 
+	string			fo_inputBuffer;
+	string			fo_outputBuffer;
+
 	string			fo_inputFileName;
 	string			fo_outputFileName;
 
@@ -37,6 +40,10 @@ private:
 	streampos		fo_inputFileSize;
 	streampos		fo_inputFilePosition;
 	streampos		fo_outputFilePosition;
+
+	streamsize		MAXLINELENGTH = 256;
+
+	unsigned long	fo_inputBufferIndex;
 
 
 	//streampos	fo_gotoInputPosition(streampos _newFilePosition, ifstream _fo_inputFileStream);
@@ -55,9 +62,10 @@ public:
 	inline streampos		fo_getCurrentOutputFilePos(void)	{ return fo_outputFilePosition;	}
 
 
+	void		fo_readFromInputFile(void);
+	void		parseInputBuffer(void);
 
-
-	streampos	fo_readLineFromInputFile(streampos _newFilePosition, string &_readBuffer);
+	void		printInputBufferToScreen(void) { cout << fo_inputBuffer << endl; }
 
 	/*inline unsigned long	getNumberOfSearchHits(void)		{ return numberOfSearchHits;	}
 

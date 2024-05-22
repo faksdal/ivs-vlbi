@@ -106,7 +106,6 @@ fileoperations::fileoperations(string _inputFileName, string _outputFileName, bo
 		cout << "[OK]    fileoperations::fileoperations(): current value of output file pointer: " << fo_outputFilePosition << endl;
 	}
 
-
 }
 
 
@@ -118,7 +117,10 @@ fileoperations::~fileoperations()
 		cout << "[OK]    fileoperations::~fileoperations(): closing files before exiting. " << endl;
 
 	// Close filestreams upon exiting...
-	fo_inputFileStream.close();
-	fo_outputFileStream.close();
+	if(fo_inputFileStream.is_open())
+		fo_inputFileStream.close();
+
+	if(fo_outputFileStream.is_open())
+		fo_outputFileStream.close();
 
 }

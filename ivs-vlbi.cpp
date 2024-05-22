@@ -1,10 +1,10 @@
-/******************************************************************************
+/*******************************************************************************
  *
  * ivs-vlbi.cpp; Created by Jon Leithe
  * Date: 3/5-2024
  *
  * 
-******************************************************************************/
+*******************************************************************************/
   
 
 #include <getopt.h>
@@ -24,12 +24,12 @@ using namespace std;
 // Driver code
 int main(int argc, char **argv)
 {
-	//int		searchTermsArrayIndex;
+	int		searchTermsIndex;
 
 	string	inputFileName;
 	string	outputFileName;
 
-	string	searchTermsArray[MAXSEARCHTERMS];
+	string	searchTerms[MAXSEARCHTERMS];
 
 	bool	inputFileNameSet;
 	bool	outputFileNameSet;
@@ -56,27 +56,23 @@ int main(int argc, char **argv)
 		{0, 0, 0, 0}
 	};	//End of getopt()-variables
 
-	//	reset searchArrayIndex, use to keep track of serach terms
-	//searchTermsArrayIndex = 0;
+	// reset searchArrayIndex, use to keep track of how many search terms we have
+	searchTermsIndex = 0;
 
 	//	getopt() switch statement
 	while((c = getopt_long(argc, argv, shortOptions, longOptions, &optionIndex)) != -1){
 		switch(c){
 			case 's':	{
-							//cout << "main: searchTermsArrayIndex: " << searchTermsArrayIndex << endl;
-							/*
-							if(searchTermsArrayIndex >= MAXSEARCHTERMS){
+							if(searchTermsIndex >= MAXSEARCHTERMS){
 								cout << "main(): MAXSEARCHTERMS reached!";
 								break;
 							}
-							*/
 
 							if(!searchTermsSet)
 								searchTermsSet = true;
 
-							//searchTermsArray[searchTermsArrayIndex] = optarg;
-							//cout << "main: ...search string added: " << searchTermsArray[searchTermsArrayIndex++] << endl;
-							//searchTermsArrayIndex++;
+							searchTerms[searchTermsIndex] = optarg;
+							searchTermsIndex++;
 							break;
 						}
 			case 'i':	{
@@ -136,7 +132,8 @@ int main(int argc, char **argv)
 
 	//	If all necessities are in place, we can continue to
 	//	create an object-instance and initiate the search...
-	fileoperations *fo;
+	fileoperations	*fo;
+
 	if(inputFileNameSet && outputFileNameSet){
 
 		if(verbose)
@@ -148,59 +145,28 @@ int main(int argc, char **argv)
 			exit(-1);
 		}
 
-		//fo->streampos	fo_readInputFile(streampos _newFilePosition, string &_readBuffer);
-		streampos	newFilePosition = 299;
-		string		readBuffer;
 
-		cout << "main(): current input file position: " << fo->fo_getCurrentInputFilePos() << endl;
-		fo->fo_readLineFromInputFile(newFilePosition, readBuffer);
-		cout << "main(): " << readBuffer << endl;
+		// read content of input file to memory
+		fo->fo_readFromInputFile();
+
+
+		//fo->printInputBufferToScreen();
 
 	} // if(inputFileNameSet && outputFileNameSet)
 
-	/*  && searchTermsSet)
-		fileoperations fo(inputFileName, outputFileName, searchTermsArray);
+	if(searchTermsSet && inputFileNameSet && outputFileNameSet){
+		if(searchTermsIndex == 1)
+			cout << "main(): We have " << searchTermsIndex << " search term" << endl;
+		else if(searchTermsIndex > 1)
+			cout << "main(): We have " << searchTermsIndex << " search terms" << endl;
 
-		unsigned long	startPosition = 0L;
-		for(short i = 0; i < searchTermsArrayIndex; i++){
-			cout << "main(): First search term index: " << i << endl;
-			cout << "main(): Search string:  " << searchTermsArray[i] << endl;
+		// now we need to parse the fo_inputBuffer to create the output we want
+		// we'll store the output in fo_outputBuffer
+		fo->parseInputBuffer();
 
 
 
-			while(!fo.eof){
-
-				//cout << "main(): Inside while(!fo.eof)-loop. " << endl;
-				//cout << "main(): searchTermsArrayIndex:  " << i << endl;
-				cout << "main(): Starting new search for:  " << searchTermsArray[i] << endl;
-				//		cin >> s;
-
-				startPosition = (fo.find(startPosition, searchTermsArray[i])) + searchTermsArray[i].length();
-				cout << "main(): Position: " << startPosition << endl;
-
-				//cout << "main(): startPosition: " << startPosition << endl;
-				//fo.eof = true;
-
-			}
-			// Reset startPosition after we are done with a search term
-			cout << "main(): Input file pointer pos: " << fo.resetInputFilePos() << endl;
-			cout << "main(): One search term done, move on to the next..." << endl;
-			//cin >> s;
-
-			startPosition = 0L;
-		}
-
-		cout << "main(): Number of search hits: " << fo.getNumberOfSearchHits() << endl;
-		for(int j = 0; j <= fo.getNumberOfSearchHits(); j++){
-			cout << "main(): Search hit # " << j+1 << ": " << fo.hits[j].searchTerm << ", at position: " << fo.hits[j].position << endl;
-		}
 	}
-
-	else{
-		cout << "Missing parameters... Quitting!" << endl;
-		// TODO: provide some useful information
-	}
-	*/
 
 	delete fo;
 
