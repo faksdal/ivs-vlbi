@@ -46,15 +46,16 @@ void fileoperations::parseInputBuffer(void)
 
 	i = 0;
 	while(fo_inputBuffer[htmlIndex - i] != '>'){
-		cout << fo_inputBuffer[htmlIndex - i];
+		//cout << fo_inputBuffer[htmlIndex - i];
 		i++;
 	}
 	i--;
 
 	// string& append (const string& str, size_t subpos, size_t sublen);
 	fo_outputBuffer.append(fo_inputBuffer, htmlIndex - i, i);
-	fo_outputBuffer.append("\t\t");
+	fo_outputBuffer.append("\tJon\tLeithe\t9173\tNy-Ålesund");
 
-
+	cout << "fo_outputBuffer:";
+	cout << fo_outputBuffer << endl;
 
 }
