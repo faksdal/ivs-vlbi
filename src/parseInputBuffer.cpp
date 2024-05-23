@@ -16,53 +16,45 @@
 
 void fileoperations::parseInputBuffer(void)
 {
-	unsigned int	stringLength;
+	int				i;
 
-	string			searchTerm;
+	unsigned int	sessionTypeIndex, antennaIndex, htmlIndex;
 
+	string			searchTerm = "Ns";
+	string			htmlToken;
+	string			sessionTypeString = "session-type";
+
+
+
+	/*
+	 * Start off by finding the string class="session-type", take note of its index
+	 * From that index, search for the searchterm (e.g. the antenna Ns or Nn), if found; take note of that index
+	 * Go back to the session-type-index, extract useful data about the session and put it into a string
+	 * repeat the process
+	*/
 
 	// start by clearing the fo_outputBuffer
 	fo_outputBuffer.clear();
 
-	//cout << "fileoperations::parseInputBuffer(): " << endl;
+	sessionTypeIndex = fo_inputBuffer.find(sessionTypeString);
 
-	searchTerm = "<title>";
-	fo_inputBufferIndex = fo_inputBuffer.find(searchTerm);
-	if(fo_inputBufferIndex != string::npos){
-		//cout << "fileoperations::parseInputBuffer(): fo_inputBufferIndex: " << fo_inputBufferIndex << endl;
-		fo_inputBufferIndex += searchTerm.length();
-		//cout << "fileoperations::parseInputBuffer(): searchTerm.length(): " << searchTerm.length() << endl;
-		//cout << "fileoperations::parseInputBuffer(): fo_inputBufferIndex: " << fo_inputBufferIndex << endl;
-		searchTerm = "</title>";
-		stringLength = (fo_inputBuffer.find(searchTerm)) - fo_inputBufferIndex;
+	antennaIndex = fo_inputBuffer.find(searchTerm, sessionTypeIndex);
 
-		// string substr (size_t pos = 0, size_t len = npos) const;
-		fo_outputBuffer.append(fo_inputBuffer.substr(fo_inputBufferIndex, stringLength));
-		for(unsigned int i = 0; i < stringLength; i++){
-			if(fo_outputBuffer[i] == '\n')
-				fo_outputBuffer[i] = ' ';
-		}
+	htmlToken = "</a>";
+	htmlIndex = fo_inputBuffer.find(htmlToken, sessionTypeIndex);
+	cout << "htmlIndex: " << htmlIndex << endl;
 
+	i = 0;
+	while(fo_inputBuffer[htmlIndex - i] != '>'){
+		cout << fo_inputBuffer[htmlIndex - i];
+		i++;
 	}
+	i--;
 
-	fo_inputBufferIndex = 0;
-	searchTerm = "<h1 class=\"title\">";
-	fo_inputBufferIndex = fo_inputBuffer.find(searchTerm);
-	if(fo_inputBufferIndex != string::npos){
-		cout << "fileoperations::parseInputBuffer(): fo_inputBufferIndex: " << fo_inputBufferIndex << endl;
-		fo_inputBufferIndex += searchTerm.length();
-		//cout << "fileoperations::parseInputBuffer(): searchTerm.length(): " << searchTerm.length() << endl;
-		//cout << "fileoperations::parseInputBuffer(): fo_inputBufferIndex: " << fo_inputBufferIndex << endl;
-		searchTerm = "</h1>";
-		stringLength = (fo_inputBuffer.find(searchTerm)) - fo_inputBufferIndex;
-
-		// string substr (size_t pos = 0, size_t len = npos) const;
-		fo_outputBuffer.append(fo_inputBuffer.substr(fo_inputBufferIndex, stringLength));
+	// string& append (const string& str, size_t subpos, size_t sublen);
+	fo_outputBuffer.append(fo_inputBuffer, htmlIndex - i, i);
+	fo_outputBuffer.append("\t\t");
 
 
-	}
-
-	cout << "fileoperations::parseInputBuffer(): fo_outputBuffer: " << endl;
-	cout << fo_outputBuffer << endl;
 
 }
