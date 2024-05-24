@@ -18,7 +18,7 @@ void fileoperations::parseInputBuffer(void)
 {
 	int				i;
 
-	unsigned int	sessionTypeIndex, antennaIndex, htmlIndex;
+	unsigned int	sessionTypeIndex, antennaIndex, searchIndex;
 
 	string			searchTerm = "Ns";
 	string			htmlToken;
@@ -33,27 +33,40 @@ void fileoperations::parseInputBuffer(void)
 	 * repeat the process
 	*/
 
+	/*
+	 *	The position of the first character of the first match.
+	 *	If no matches were found, the function returns string::npos.
+	*/
+
 	// start by clearing the fo_outputBuffer
 	fo_outputBuffer.clear();
 
-	sessionTypeIndex = fo_inputBuffer.find(sessionTypeString);
+	// First we search for the antenna name, returning an index for that position
+	antennaIndex = fo_inputBuffer.find(searchTerm);
 
-	antennaIndex = fo_inputBuffer.find(searchTerm, sessionTypeIndex);
+	// Then we need to back up making sure the particular antenna is not removed from the session
+	// This can be done by reversing a bit, and do a search for the phrase "station-id removed"
+	searchIndex = antennaIndex;
 
-	htmlToken = "</a>";
-	htmlIndex = fo_inputBuffer.find(htmlToken, sessionTypeIndex);
-	cout << "htmlIndex: " << htmlIndex << endl;
 
+
+	//antennaIndex = fo_inputBuffer.find(searchTerm, sessionTypeIndex);
+
+	//htmlToken = "</a>";
+	//htmlIndex = fo_inputBuffer.find(htmlToken, sessionTypeIndex);
+	//cout << "htmlIndex: " << htmlIndex << endl;
+
+	/*
 	i = 0;
 	while(fo_inputBuffer[htmlIndex - i] != '>'){
-		//cout << fo_inputBuffer[htmlIndex - i];
 		i++;
 	}
 	i--;
+	*/
 
 	// string& append (const string& str, size_t subpos, size_t sublen);
-	fo_outputBuffer.append(fo_inputBuffer, htmlIndex - i, i);
-	fo_outputBuffer.append("\tJon\tLeithe\t9173\tNy-Ålesund");
+	//fo_outputBuffer.append(fo_inputBuffer, htmlIndex - i, i);
+
 
 	cout << "fo_outputBuffer:";
 	cout << fo_outputBuffer << endl;
