@@ -46,6 +46,10 @@ private:
 	unsigned long	fo_inputBufferIndex;
 
 
+
+	size_t	fo_findAntenna(string _antenna, size_t _startPos);
+	bool	fo_antennaRemovedFromSession(string _antenna, size_t _startPos);
+
 	//streampos	fo_gotoInputPosition(streampos _newFilePosition, ifstream _fo_inputFileStream);
 	//streampos	fo_gotoOutputPosition(streampos _newFilePosition, ofstream _fo_outputFileStream);
 
@@ -63,7 +67,7 @@ public:
 
 
 	void		fo_readFromInputFile(void);
-	void		parseInputBuffer(void);
+	void		fo_parseInputBuffer(string _antennaName);
 
 	void		printInputBufferToScreen(void) { cout << fo_inputBuffer << endl; }
 

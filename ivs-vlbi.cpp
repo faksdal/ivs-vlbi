@@ -162,7 +162,7 @@ int main(int argc, char **argv)
 
 		// now we need to parse the fo_inputBuffer to create the output we want
 		// we'll store the output in fo_outputBuffer
-		fo->parseInputBuffer();
+		fo->fo_parseInputBuffer("Ns");
 
 
 
