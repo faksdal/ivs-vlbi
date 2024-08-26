@@ -15,11 +15,13 @@
 #
 #	$(patsubst PATTERN,REPLACEMENT,TEXT)
 ####################################################################################################
-TARGET = ivs-vlbi
+BINDIR = bin
+TARGET = ivs-sessions
 CXX = g++
 CPPFLAGS = -Iinc -I. -g -Wall
 
 OBJDIR = obj
+
 INCDIR = inc
 SRCDIR = src
 
@@ -29,7 +31,7 @@ OBJFILES = $(patsubst %.cpp, $(OBJDIR)/%.o, $(notdir $(SOURCES)))
 
 
 $(TARGET): $(OBJFILES)
-	$(CXX) $(CPPFLAGS) -o $(TARGET) $(OBJFILES)
+	$(CXX) $(CPPFLAGS) -o $(BINDIR)/$(TARGET) $(OBJFILES)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp	
 	$(CXX) $(CPPFLAGS) -c -o $@ $^
@@ -39,7 +41,4 @@ $(OBJDIR)/$(TARGET).o: $(TARGET).cpp
 	$(CXX) $(CPPFLAGS) -c -o $@ $<
 
 clean:
-	rm  $(OBJDIR)/*
-	rm $(TARGET)
-	
-
+	rm $(BINDIR)/$(TARGET) $(OBJDIR)/*

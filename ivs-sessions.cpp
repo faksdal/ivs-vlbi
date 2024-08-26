@@ -17,7 +17,7 @@
 #include "fileexists.h"
 #include "fileoperations.h"
 
-using namespace std;
+//using namespace std;
 
 
 
@@ -26,10 +26,10 @@ int main(int argc, char **argv)
 {
 	int		searchTermsIndex;
 
-	string	inputFileName;
-	string	outputFileName;
+	std::string	inputFileName;
+	std::string	outputFileName;
 
-	string	searchTerms[MAXSEARCHTERMS];
+	std::string	searchTerms[MAXSEARCHTERMS];
 
 	bool	inputFileNameSet;
 	bool	outputFileNameSet;
@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 		switch(c){
 			case 's':	{
 							if(searchTermsIndex >= MAXSEARCHTERMS){
-								cout << "main(): MAXSEARCHTERMS reached!";
+								std::cout << "main(): MAXSEARCHTERMS reached!";
 								break;
 							}
 
@@ -78,8 +78,8 @@ int main(int argc, char **argv)
 			case 'i':	{
 							// if file don't exists, give a message and exit
 							if(!fileexists(optarg)){
-								cout << "[ERROR] main(): Input file " << optarg << " does not exist!" << endl;
-								cout << "[ERROR] main(): Exiting..." << endl;
+								std::cout << "[ERROR] main(): Input file " << optarg << " does not exist!" << std::endl;
+								std::cout << "[ERROR] main(): Exiting..." << std::endl;
 								exit(-1);
 							}
 
@@ -87,16 +87,16 @@ int main(int argc, char **argv)
 							inputFileNameSet	= true;
 
 							if(verbose)
-								cout << "[OK]    main(): Input file name set to: " << inputFileName << endl;
+								std::cout << "[OK]    main(): Input file name set to: " << inputFileName << std::endl;
 
 							break;
 						}
 			case 'o':	{
 							// if outputfile exists, present the user with a choice to overwrite
 							if(fileexists(optarg)){
-								cerr << "[ERROR] main(): " << optarg << " exists! Overwrite? y/n: ";
+								std::cerr << "[ERROR] main(): " << optarg << " exists! Overwrite? y/n: ";
 								char c;
-								cin >> c;
+								std::cin >> c;
 								if(c == 'n' || c == 'N')
 									exit(-1);
 							}
@@ -105,21 +105,21 @@ int main(int argc, char **argv)
 							outputFileNameSet	= true;
 
 							if(verbose)
-								cout << "[OK]    main(): Output file name set to: " << outputFileName << endl;
+								std::cout << "[OK]    main(): Output file name set to: " << outputFileName << std::endl;
 
 							break;
 						}
 			case 'h':	{
-							cout << "main(): Provide some useful help to the user!" << endl;
+							std::cout << "main(): Provide some useful help to the user!" << std::endl;
 							exit(1);
 						}
 			case 'v':	{
 							verbose = true;
-							cout << "[OK]    Verbose output!" << endl;
+							std::cout << "[OK]    Verbose output!" << std::endl;
 							break;
 						}
 			default:	{
-							cout << "main: Switch default\n" << endl;
+							std::cout << "main: Switch default\n" << std::endl;
 							break;
 						}
 		}	//end of getopt() switch statement
@@ -137,18 +137,16 @@ int main(int argc, char **argv)
 	if(inputFileNameSet && outputFileNameSet){
 
 		if(verbose)
-			cout << "[OK]    main(): We have valid filenames!" << endl;
+			std::cout << "[OK]    main(): We have valid filenames!" << std::endl;
 
 		fo = new fileoperations(inputFileName, outputFileName, verbose);
 		if(!fo){
-			cerr << "[ERROR] main(): failed to create object: fo = new fileoperations(inputFileName, outputFileName, verbose);, exiting..." << endl;
+			std::cerr << "[ERROR] main(): failed to create object: fo = new fileoperations(inputFileName, outputFileName, verbose);, exiting..." << std::endl;
 			exit(-1);
 		}
 
-
 		// read content of input file to memory
-		fo->fo_readFromInputFile();
-
+		//fo->fo_readFromInputFile();
 
 		//fo->printInputBufferToScreen();
 
@@ -156,13 +154,14 @@ int main(int argc, char **argv)
 
 	if(searchTermsSet && inputFileNameSet && outputFileNameSet){
 		if(searchTermsIndex == 1)
-			cout << "main(): We have " << searchTermsIndex << " search term" << endl;
+			std::cout << "main(): We have " << searchTermsIndex << " search term" << std::endl;
 		else if(searchTermsIndex > 1)
-			cout << "main(): We have " << searchTermsIndex << " search terms" << endl;
+			std::cout << "main(): We have " << searchTermsIndex << " search terms" << std::endl;
 
 		// now we need to parse the fo_inputBuffer to create the output we want
 		// we'll store the output in fo_outputBuffer
-		fo->fo_parseInputBuffer("Ns");
+		//fo->fo_parseInputBuffer("Ns");
+		//fo->fo_parseInputBuffer("Nn");
 
 
 

@@ -16,7 +16,7 @@
 //#include <sys/stat.h>
 //#include <unistd.h>
 
-using namespace std;
+//using namespace std;
 
 
 #define MAXSEARCHTERMS	16
@@ -28,27 +28,27 @@ class fileoperations {
 private:
 	bool			fo_verbose;
 
-	string			fo_inputBuffer;
-	string			fo_outputBuffer;
+	std::string			fo_inputBuffer;
+	std::string			fo_outputBuffer;
 
-	string			fo_inputFileName;
-	string			fo_outputFileName;
+	std::string			fo_inputFileName;
+	std::string			fo_outputFileName;
 
-	ifstream		fo_inputFileStream;
-	ofstream		fo_outputFileStream;
+	std::ifstream		fo_inputFileStream;
+	std::ofstream		fo_outputFileStream;
 
-	streampos		fo_inputFileSize;
-	streampos		fo_inputFilePosition;
-	streampos		fo_outputFilePosition;
+	std::streampos		fo_inputFileSize;
+	std::streampos		fo_inputFilePosition;
+	std::streampos		fo_outputFilePosition;
 
-	streamsize		MAXLINELENGTH = 256;
+	std::streamsize		MAXLINELENGTH = 256;
 
 	unsigned long	fo_inputBufferIndex;
 
 
 
-	size_t	fo_findAntenna(string _antenna, size_t _startPos);
-	bool	fo_antennaRemovedFromSession(string _antenna, size_t _startPos);
+	//size_t	fo_findAntenna(std::string _antenna, size_t _startPos);
+	//bool	fo_antennaRemovedFromSession(std::string _antenna, size_t _startPos);
 
 	//streampos	fo_gotoInputPosition(streampos _newFilePosition, ifstream _fo_inputFileStream);
 	//streampos	fo_gotoOutputPosition(streampos _newFilePosition, ofstream _fo_outputFileStream);
@@ -57,34 +57,33 @@ private:
 protected:
 
 public:
-	fileoperations(string _inputFileName, string _outputFileName, bool _verbose);
+	fileoperations(std::string _inputFileName, std::string _outputFileName, bool _verbose);
 	virtual ~fileoperations();
 
-	inline unsigned long	fo_getInputFileSize(void)			{ return (unsigned long)fo_inputFileSize; }
+	//inline unsigned long	fo_getInputFileSize(void)			{ return (unsigned long)fo_inputFileSize; }
+	//inline std::streampos	fo_getCurrentInputFilePos(void)		{ return fo_inputFilePosition; }
+	//inline std::streampos	fo_getCurrentOutputFilePos(void)	{ return fo_outputFilePosition;	}
 
-	inline streampos		fo_getCurrentInputFilePos(void)		{ return fo_inputFilePosition; }
-	inline streampos		fo_getCurrentOutputFilePos(void)	{ return fo_outputFilePosition;	}
 
+	//void		fo_readFromInputFile(void);
+	//void		fo_parseInputBuffer(std::string _antennaName);
 
-	void		fo_readFromInputFile(void);
-	void		fo_parseInputBuffer(string _antennaName);
-
-	void		printInputBufferToScreen(void) { cout << fo_inputBuffer << endl; }
+	//void		printInputBufferToScreen(void) { cout << fo_inputBuffer << endl; }
 
 	/*inline unsigned long	getNumberOfSearchHits(void)		{ return numberOfSearchHits;	}
 
 	//inline unsigned long	resetInputFilePos(void)			{ inputFile.seekg(0, ios::beg);	return(inputFile.tellg()); }
 
 
-	string getOutputFileName(bool _printToScreen);
-	string getInputFileName(bool _printToScreen);
+	std::string getOutputFileName(bool _printToScreen);
+	std::string getInputFileName(bool _printToScreen);
 
 	//void			readFile(void);
 
-	unsigned long	find(unsigned long _startPosition, string _searchString);
+	unsigned long	find(unsigned long _startPosition, std::string _searchstd::string);
 	unsigned long	resetInputFilePos(void);
 
-	//string			fread(unsigned long _startPosition, unsigned long _nbytes);
+	//std::string			fread(unsigned long _startPosition, unsigned long _nbytes);
 
 	*/
 };
