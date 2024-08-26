@@ -4,6 +4,7 @@
  * Date: 3/5-2024
  *
  * 
+ *
 *******************************************************************************/
   
 
@@ -163,9 +164,7 @@ int main(int argc, char **argv)
 		//fo->fo_parseInputBuffer("Ns");
 		//fo->fo_parseInputBuffer("Nn");
 
-
-
-	}
+	} // if(searchTermsSet && inputFileNameSet && outputFileNameSet)
 
 	delete fo;
 
