@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 			case 'o':	{
 							// if outputfile exists, present the user with a choice to overwrite
 							if(fileexists(optarg)){
-								std::cerr << "[ERROR] main(): " << optarg << " exists! Overwrite? y/n: ";
+								std::cerr << "[WARNING] main(): " << optarg << " exists! Overwrite? y/n: ";
 								char c;
 								std::cin >> c;
 								if(c == 'n' || c == 'N')

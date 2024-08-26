@@ -28,20 +28,20 @@ class fileoperations {
 private:
 	bool			fo_verbose;
 
-	std::string			fo_inputBuffer;
-	std::string			fo_outputBuffer;
+	std::string		fo_inputBuffer;
+	std::string		fo_outputBuffer;
 
-	std::string			fo_inputFileName;
-	std::string			fo_outputFileName;
+	std::string		fo_inputFileName;
+	std::string		fo_outputFileName;
 
-	std::ifstream		fo_inputFileStream;
-	std::ofstream		fo_outputFileStream;
+	std::ifstream	fo_inputFileStream;
+	std::ofstream	fo_outputFileStream;
 
-	std::streampos		fo_inputFileSize;
-	std::streampos		fo_inputFilePosition;
-	std::streampos		fo_outputFilePosition;
+	std::streampos	fo_inputFileSize;
+	std::streampos	fo_inputFilePosition;
+	std::streampos	fo_outputFilePosition;
 
-	std::streamsize		MAXLINELENGTH = 256;
+	std::streamsize	MAXLINELENGTH = 256;
 
 	unsigned long	fo_inputBufferIndex;
 
@@ -60,12 +60,15 @@ public:
 	fileoperations(std::string _inputFileName, std::string _outputFileName, bool _verbose);
 	virtual ~fileoperations();
 
+	unsigned long	fo_resetInputFilePos(void);
+	void			fo_readFromInputFile(void);
+
 	//inline unsigned long	fo_getInputFileSize(void)			{ return (unsigned long)fo_inputFileSize; }
 	//inline std::streampos	fo_getCurrentInputFilePos(void)		{ return fo_inputFilePosition; }
 	//inline std::streampos	fo_getCurrentOutputFilePos(void)	{ return fo_outputFilePosition;	}
 
 
-	//void		fo_readFromInputFile(void);
+	//
 	//void		fo_parseInputBuffer(std::string _antennaName);
 
 	//void		printInputBufferToScreen(void) { cout << fo_inputBuffer << endl; }
@@ -81,7 +84,7 @@ public:
 	//void			readFile(void);
 
 	unsigned long	find(unsigned long _startPosition, std::string _searchstd::string);
-	unsigned long	resetInputFilePos(void);
+
 
 	//std::string			fread(unsigned long _startPosition, unsigned long _nbytes);
 

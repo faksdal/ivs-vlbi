@@ -19,8 +19,6 @@ void fileoperations::fo_readFromInputFile(void)
 {
 	char	c;
 
-
-
 	//cout << "fo_inputFileStream.rdstate(): " << fo_inputFileStream.rdstate() << endl;
 
 	//cout << "goodbit: " << (fo_inputFileStream.good() ? "set" : "not set") << endl;
@@ -29,14 +27,14 @@ void fileoperations::fo_readFromInputFile(void)
 	//cout << "failbit: " << (fo_inputFileStream.fail() ? "set" : "not set") << endl;
 
 	// seek to start of input file
-	fo_inputFileStream.seekg(0, ios::beg);
+	fo_inputFileStream.seekg(0, std::ios::beg);
 	if(fo_inputFileStream.tellg() != 0){
-		cerr << "[ERROR] fileoperations::fo_readFromInputFile(): Search to start of file failed!" << endl;
+		std::cerr << "[ERROR] fileoperations::fo_readFromInputFile(): Search to start of file failed!" << std::endl;
 		exit(-1);
 	}
 	else{
 		if(fo_verbose)
-			cout << "[OK]    fileoperations::fo_readFromInputFile(): Search to start of file ok" << endl;
+			std::cout << "[OK]    fileoperations::fo_readFromInputFile(): Search to start of file ok" << std::endl;
 	}
 
 	//cout << "fileoperations::fo_readFromInputFile(): input file pointer position before read operation: " << fo_inputFileStream.tellg() << endl;
@@ -55,9 +53,9 @@ void fileoperations::fo_readFromInputFile(void)
 	// reset file pointer to beginning of file after read operation
 	// and clear any failbit
 	fo_inputFileStream.clear();
-	fo_inputFileStream.seekg(0, ios::beg);
+	fo_inputFileStream.seekg(0, std::ios::beg);
 	if(fo_inputFileStream.tellg() != 0){
-		cerr << "[ERROR] fileoperations::fo_readFromInputFile(): Search to start of file failed!" << endl;
+		std::cerr << "[ERROR] fileoperations::fo_readFromInputFile(): Search to start of file failed!" << std::endl;
 		exit(-1);
 	}
 

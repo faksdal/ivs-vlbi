@@ -47,6 +47,11 @@ fileoperations::fileoperations(std::string _inputFileName, std::string _outputFi
 		exit(-1);
 	}
 
+	std::cout << "File pointer after reset :" << fo_resetInputFilePos() << std::endl;
+	fo_readFromInputFile();
+
+	std::cout << fo_inputBuffer << std::endl;
+
 	//	update current file pointer positions
 	//fo_updateFilepointerPositions();
 }
