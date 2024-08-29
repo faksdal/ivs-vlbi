@@ -28,8 +28,6 @@ SRCDIR = src
 SOURCES = $(wildcard *.cpp $(SRCDIR)/*.cpp)
 OBJFILES = $(patsubst %.cpp, $(OBJDIR)/%.o, $(notdir $(SOURCES)))
 
-
-
 $(TARGET): $(OBJFILES)
 	$(CXX) $(CPPFLAGS) -o $(BINDIR)/$(TARGET) $(OBJFILES)
 
@@ -39,6 +37,9 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 $(OBJDIR)/$(TARGET).o: $(TARGET).cpp
 	@echo $(OBJFILES)
 	$(CXX) $(CPPFLAGS) -c -o $@ $<
+
+$(OBJDIR)/main.o: main.cpp	
+	$(CXX) $(CPPFLAGS) -c -o $(OBJDIR)/main.o main.cpp
 
 clean:
 	rm $(BINDIR)/$(TARGET) $(OBJDIR)/*

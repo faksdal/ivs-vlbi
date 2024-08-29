@@ -5,15 +5,15 @@
  *      Author: leijon
  */
 #include <string.h>
-#include "../inc/fileoperations.h"
+#include "fileoperations.h"
 
 
 
 //	The constructor is in charge of opening both input- and output-files,
 //	getting the filesize and position the file pointer at the beginning
-//	of the input file.
+//	of the input file. It also read the input-files content into memory.
 //
-//	It also gives an error if opening the files don't work out
+//	It gives an error if opening the files don't work out.
 //
 fileoperations::fileoperations(std::string _inputFileName, std::string _outputFileName, bool _verbose)
 {

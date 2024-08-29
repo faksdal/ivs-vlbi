@@ -10,6 +10,7 @@
 //
 
 #include "fileoperations.h"
+//#include "sessionlist.h"
 
 
 
