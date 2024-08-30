@@ -40,13 +40,14 @@ public:
 
 class sessionList{
 
+	int			sessionIndex, sessionCount;
 	sessions*	s;
 
 public:
-	//sessionList();
+	sessionList();
 	//virtual ~sessionList();
 
-	sessions*	sl_add(	std::string	_sessionType,
+	void	sl_add(	std::string	_sessionType,
 						long int	_date,
 						std::string	s_sessionCode,
 						int			_doy,

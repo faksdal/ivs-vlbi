@@ -8,12 +8,12 @@
 
 #include "sessionlist.h"
 
-/*
-sessionList::sessionList() {
-	// TODO Auto-generated constructor stub
 
+sessionList::sessionList()
+{
+	sessionIndex = sessionCount = 0;
 }
-
+/*
 sessionList::~sessionList() {
 	// TODO Auto-generated destructor stub
 }
