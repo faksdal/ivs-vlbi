@@ -14,9 +14,9 @@
 /*
  *
  */
-class ivsSessions: public sessionList, public sessions, public fileoperations{
+class ivsSessions: public sessionList, public session, public fileoperations{
 
-	sessionList*	sl[];
+	sessionList*	sl;
 
 public:
 	ivsSessions(std::string _inputFileName, std::string _outputFileName, bool _verbose = false);

@@ -16,7 +16,7 @@
 
 #include "fileexists.h"
 #include "fileoperations.h"
-#include "ivsSessions.h"
+//#include "ivsSessions.h"
 
 //using namespace std;
 
@@ -130,7 +130,7 @@ int main(int argc, char **argv)
 
 
 
-	/*************************************************************************
+	/*************************************************************************/
 
 	//	If all necessities are in place, we can continue to
 	//	create an object-instance and initiate the search...
@@ -171,13 +171,15 @@ int main(int argc, char **argv)
 
 	delete fo;
 
-	*************************************************************************/
+	/*************************************************************************/
 
+	/*
 	if(searchTermsSet && inputFileNameSet && outputFileNameSet){
 		ivsSessions*	sessions;
 
 		sessions = new ivsSessions(inputFileName, outputFileName);
 	}
+	*/
 
     return(0);
 }

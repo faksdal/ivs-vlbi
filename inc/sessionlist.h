@@ -15,7 +15,7 @@
 
 
 
-class sessions{
+class session{
 	std::string	s_sessionType;
 	long int	s_date;
 	std::string	s_sessionCode;
@@ -41,7 +41,7 @@ public:
 class sessionList{
 
 	int			sessionIndex, sessionCount;
-	sessions*	s;
+	session*	s;
 
 public:
 	sessionList();
