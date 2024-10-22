@@ -16,7 +16,7 @@
 
 #include "fileexists.h"
 #include "fileoperations.h"
-//#include "ivsSessions.h"
+#include "ivsSessions.h"
 
 //using namespace std;
 
@@ -114,11 +114,11 @@ int main(int argc, char **argv)
 							std::cout << "main(): Provide some useful help to the user!" << std::endl;
 							exit(1);
 						}
-			case 'v':	{
+			/*case 'v':	{
 							verbose = true;
 							std::cout << "[OK]    Verbose output!" << std::endl;
 							break;
-						}
+						}*/
 			default:	{
 							std::cout << "main: Switch default\n" << std::endl;
 							break;
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 	//	create an object-instance and initiate the search...
 	fileoperations	*fo;
 
-	if(inputFileNameSet && outputFileNameSet){
+	if(inputFileNameSet /*&& outputFileNameSet*/){
 		if(verbose)
 			std::cout << "[OK]    main(): We have valid filenames!" << std::endl;
 
@@ -141,36 +141,17 @@ int main(int argc, char **argv)
 			exit(-1);
 		}
 	} // if(inputFileNameSet && outputFileNameSet)
+	/*************************************************************************/
 
+	// store file contents in memory, before deleting the fo-object
 	std::string str = fo->fo_getInputBuffer();
-
+	unsigned long size = str.size();
 	delete fo;
 
-	const char*	ptr = str.c_str();
-	short	numLines = 36;
+	// instantiate the session list, passing a pointer to the input file content to the constructor
+	ivsSessions* ivs = new ivsSessions(str.c_str(), size);
 
-	std::string	stringList[numLines];
-	short		counter = 0;
-	char chr;
 
-	while(counter < numLines){
-		while(*ptr != '\n'){
-			chr = *ptr;
-			stringList[counter].append(1, chr);
-			//std::cout << "while *ptr" << std::endl;
-			*ptr++;
-		}
-		chr = '\n';
-		stringList[counter].append(1, chr);
-		counter++;
-		*ptr++;
-
-	}
-
-	counter = 0;
-	while(counter < numLines){
-		std::cout << stringList[counter++];
-	}
 
 	/*************************************************************************/
 

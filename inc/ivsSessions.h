@@ -8,18 +8,19 @@
 #ifndef INC_IVSSESSIONS_H_
 #define INC_IVSSESSIONS_H_
 
-#include "fileoperations.h"
-#include "sessionlist.h"
+//#include "fileoperations.h"
+//#include "sessionlist.h"
 
 /*
  *
  */
-class ivsSessions: public sessionList, public session, public fileoperations{
+class ivsSessions{
 
-	sessionList*	sl;
+
+
 
 public:
-	ivsSessions(std::string _inputFileName, std::string _outputFileName, bool _verbose = false);
+	ivsSessions(const char* _ptr, unsigned long _size);
 	virtual ~ivsSessions();
 };
 

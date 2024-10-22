@@ -32,22 +32,24 @@ fileoperations::fileoperations(std::string _inputFileName, std::string _outputFi
 	}
 	else{
 		// get filesize and store it in object variable
-		std::cout << "fileoperations(): inputFile.tellg(): " << fo_inputFileStream.tellg() << std::endl;
+		//std::cout << "fileoperations(): inputFile.tellg(): " << fo_inputFileStream.tellg() << std::endl;
 		fo_inputFileSize = fo_inputFileStream.tellg();
 		// After getting the filesize, set file pointer at beginning of file
 		fo_inputFileStream.seekg(0, std::ios::beg);
 	}
 
 
-	// open the output file
-	fo_outputFileStream.open(fo_outputFileName);
-	//	if file is not open, flag an error and exit
-	if(!fo_outputFileStream.is_open()){
-		std::cout << "fileoperations(): Error opening output file: " << fo_outputFileName << ". Exiting..." << std::endl;
-		exit(-1);
+	// open the output file, if we're given a name for it
+	if(fo_outputFileName.length() > 0){
+		fo_outputFileStream.open(fo_outputFileName);
+		//	if file is not open, flag an error and exit
+		if(!fo_outputFileStream.is_open()){
+			std::cout << "fileoperations(): Error opening output file: " << fo_outputFileName << ". Exiting..." << std::endl;
+			exit(-1);
+		}
 	}
 
-	std::cout << "File pointer after reset :" << fo_resetInputFilePos() << std::endl;
+	//std::cout << "File pointer after reset :" << fo_resetInputFilePos() << std::endl;
 
 	// read contents of input-file to memory
 	// this funtion also closes the input-file
