@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 		switch(c){
 			case 's':	{
 							if(searchTermsIndex >= MAXSEARCHTERMS){
-								std::cout << "main(): MAXSEARCHTERMS reached!";
+								std::cout << "main(): MAXSEARCHTERMS reached";
 								break;
 							}
 
