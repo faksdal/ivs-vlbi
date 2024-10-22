@@ -125,11 +125,6 @@ int main(int argc, char **argv)
 						}
 		}	//end of getopt() switch statement
 	}	// end of while-loop
-
-
-
-
-
 	/*************************************************************************/
 
 	//	If all necessities are in place, we can continue to
@@ -137,49 +132,47 @@ int main(int argc, char **argv)
 	fileoperations	*fo;
 
 	if(inputFileNameSet && outputFileNameSet){
-
 		if(verbose)
 			std::cout << "[OK]    main(): We have valid filenames!" << std::endl;
 
 		fo = new fileoperations(inputFileName, outputFileName, verbose);
 		if(!fo){
-			std::cerr << "[ERROR] main(): failed to create object: fo = new fileoperations(inputFileName, outputFileName, verbose);, exiting..." << std::endl;
+			std::cerr << "[ERROR] main(): failed to create object: fo = new fileoperations(inputFileName, outputFileName, verbose), exiting..." << std::endl;
 			exit(-1);
 		}
-
-		// read content of input file to memory
-		//fo->fo_readFromInputFile();
-
-		//fo->printInputBufferToScreen();
-
 	} // if(inputFileNameSet && outputFileNameSet)
 
-	if(searchTermsSet && inputFileNameSet && outputFileNameSet){
-		if(searchTermsIndex == 1)
-			std::cout << "main(): We have " << searchTermsIndex << " search term" << std::endl;
-		else if(searchTermsIndex > 1)
-			std::cout << "main(): We have " << searchTermsIndex << " search terms" << std::endl;
-
-		// now we need to parse the fo_inputBuffer to create the output we want
-		// we'll store the output in fo_outputBuffer
-		//fo->fo_parseInputBuffer("Ns");
-		//fo->fo_parseInputBuffer("Nn");
-
-	} // if(searchTermsSet && inputFileNameSet && outputFileNameSet)
-
-
+	std::string str = fo->fo_getInputBuffer();
 
 	delete fo;
 
-	/*************************************************************************/
+	const char*	ptr = str.c_str();
+	short	numLines = 36;
 
-	/*
-	if(searchTermsSet && inputFileNameSet && outputFileNameSet){
-		ivsSessions*	sessions;
+	std::string	stringList[numLines];
+	short		counter = 0;
+	char chr;
 
-		sessions = new ivsSessions(inputFileName, outputFileName);
+	while(counter < numLines){
+		while(*ptr != '\n'){
+			chr = *ptr;
+			stringList[counter].append(1, chr);
+			//std::cout << "while *ptr" << std::endl;
+			*ptr++;
+		}
+		chr = '\n';
+		stringList[counter].append(1, chr);
+		counter++;
+		*ptr++;
+
 	}
-	*/
+
+	counter = 0;
+	while(counter < numLines){
+		std::cout << stringList[counter++];
+	}
+
+	/*************************************************************************/
 
     return(0);
 }

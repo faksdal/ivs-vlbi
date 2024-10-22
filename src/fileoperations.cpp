@@ -48,12 +48,13 @@ fileoperations::fileoperations(std::string _inputFileName, std::string _outputFi
 	}
 
 	std::cout << "File pointer after reset :" << fo_resetInputFilePos() << std::endl;
+
+	// read contents of input-file to memory
+	// this funtion also closes the input-file
 	fo_readFromInputFile();
 
-	std::cout << fo_inputBuffer << std::endl;
-
-	//	update current file pointer positions
-	//fo_updateFilepointerPositions();
+	// print fo_inputBuffer to tty, for debug purposes...
+	//std::cout << fo_inputBuffer << std::endl;
 }
 
 

@@ -63,6 +63,8 @@ public:
 	unsigned long	fo_resetInputFilePos(void);
 	void			fo_readFromInputFile(void);
 
+	inline std::string	fo_getInputBuffer(void) {return fo_inputBuffer;}
+
 	//inline unsigned long	fo_getInputFileSize(void)			{ return (unsigned long)fo_inputFileSize; }
 	//inline std::streampos	fo_getCurrentInputFilePos(void)		{ return fo_inputFilePosition; }
 	//inline std::streampos	fo_getCurrentOutputFilePos(void)	{ return fo_outputFilePosition;	}
