@@ -1,0 +1,5 @@
+get-sessions.sh
+quickhit.sh
+
+bin/*
+obj/*.o

@@ -46,6 +46,7 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size)
 	unsigned long	c			= 0;
 	std::string		buffer;
 	bool			quit		= false;
+	int				startIndex, endIndex;
 
 	std::string		_sessionType;
 	std::string		_date;
@@ -90,6 +91,9 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size)
 	_subm.clear();
 	_del.clear();
 
+	startIndex	= 0;
+	endIndex	= 1;
+
 	// scan forward to the first occurence of '|', to put us at the start of the actual sessions
 	while(*_ptr != '|'){
 		*_ptr++;
@@ -109,31 +113,57 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size)
 			buffer.append(1, *_ptr);
 			//std::cout << "NEWLINE";// << std::endl;
 			//std::cout << *_ptr;// << std::endl;
+			/*
 			for(int i = 0; i < 13; i++){
 				//std::cout << buffer[i];
 			}
 			for(int i = 13; i < 22; i++){
 				//std::cout << buffer[i];
 			}
+			*/
 
 			// TODO: dynamically set the boundries for each field
 			// TODO: as the intensive and regular schedule files differ in format
-			_sessionType.append(buffer, 0, 13);
-			_date.append(buffer, 13, 9);
-			_sessionCode.append(buffer, 22, 13);
-			_doy.append(buffer, 35, 4);
 
-			_time.append(buffer, 39, 6);
-			_dur.append(buffer, 45, 6);
+			//std::cout << "startIndex: " << startIndex << std::endl;
 
-			_includedStations.append(buffer, 51, 55);
-			//_excludedStations.append(buffer, 51, 55);
-			_sked.append(buffer, 106, 5);
-			_corr.append(buffer, 111, 5);
-			_status.append(buffer, 116, 9);
-			_dbcCode.append(buffer, 125, 5);
-			_subm.append(buffer,  130, 5);
-			_del.append(buffer, 135, 6);
+
+			// We're at the start of the buffer and the first character is '|'
+			// This corresponds to startIndex = 0;
+			// Now I must scan the buffer for the next occurence of '|'
+			// And store that index in endIndex
+			while(buffer[endIndex] != '|')
+				endIndex++;
+			_sessionType.append(buffer, startIndex, (endIndex - startIndex));
+
+			startIndex = endIndex;
+			endIndex++;
+			while(buffer[endIndex] != '|')
+				endIndex++;
+
+			_date.append(buffer, startIndex, (endIndex - startIndex));
+
+			startIndex = endIndex;
+			endIndex++;
+			while(buffer[endIndex] != '|')
+				endIndex++;
+			_sessionCode.append(buffer, startIndex, (endIndex - startIndex));
+
+			/*
+			_doy.append(buffer, startIndex, (endIndex - startIndex));
+
+			_time.append(buffer, startIndex, (endIndex - startIndex));
+			_dur.append(buffer, startIndex, (endIndex - startIndex));
+
+			_includedStations.append(buffer, startIndex, (endIndex - startIndex));
+			//_excludedStations.append(buffer, startIndex, (endIndex - startIndex));
+			_sked.append(buffer, startIndex, (endIndex - startIndex));
+			_corr.append(buffer, startIndex, (endIndex - startIndex));
+			_status.append(buffer, startIndex, (endIndex - startIndex));
+			_dbcCode.append(buffer, startIndex, (endIndex - startIndex));
+			_subm.append(buffer, startIndex, (endIndex - startIndex));
+			_del.append(buffer, startIndex, (endIndex - startIndex));
+			*/
 
 
 			std::cout	<< _sessionType
@@ -150,6 +180,7 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size)
 						<< _dbcCode
 						<< _subm
 						<< _del;
+
 
 			// print the string to screen
 			std::cout << std::endl;
@@ -170,6 +201,9 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size)
 			_dbcCode.clear();
 			_subm.clear();
 			_del.clear();
+
+			startIndex	= 0;
+			endIndex	= 1;
 
 			// advance pointer to string
 			*_ptr++;
