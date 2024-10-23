@@ -6,7 +6,8 @@
  * 
  *
 *******************************************************************************/
-  
+#pragma GCC diagnostic ignored "-Wunused-variable" ivs
+
 #include <getopt.h>
 #include <iostream>
 
@@ -146,10 +147,17 @@ int main(int argc, char **argv)
 	// store file contents in memory, before deleting the fo-object
 	std::string str = fo->fo_getInputBuffer();
 	unsigned long size = str.size();
+
+	bool intensives  = false;
+	if(str.find("INTENSIVES") != std::string::npos)
+		intensives  = true;
+
 	delete fo;
 
 	// instantiate the session list, passing a pointer to the input file content to the constructor
-	ivsSessions* ivs = new ivsSessions(str.c_str(), size);
+	ivsSessions* ivs = new ivsSessions(str.c_str(), size, intensives);
+
+	ivs->run();
 
 
 
