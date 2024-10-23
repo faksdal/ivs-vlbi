@@ -30,6 +30,10 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size)
 	std::cout << "Size of *_ptr: " << _size << std::endl;
 
 	while(c < _size){
+		std::cout << *_ptr;
+		c++;
+		*_ptr++;
+		/*
 		buffer.append(1, *_ptr);
 		if(*_ptr == '\r'){
 			//buffer.append(1, *_ptr);
@@ -44,14 +48,18 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size)
 		//buffer.append(1, *_ptr);
 		*_ptr++;
 		c++;
+		*/
 	} // while(c <= _size)
 
+	std::cout << std::endl;
 
+	/*
 	// print the entire list
 	std::cout << "Number of elements in the ivsList: " << ivsList.size() << std::endl;
 	for(int i = 0; i < (int)ivsList.size(); i++){
 		std::cout << ivsList[i] << std::endl;
 	}
+	*/
 
 	/*
 
