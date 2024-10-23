@@ -24,7 +24,7 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size)
 
 	// create the ivsList using the vector class
 	// this makes it easier to manage dynamic lists
-	std::vector<std::string>	ivsList;
+	//std::vector<std::string>	ivsList;
 	std::vector<ListItems>		ivsListItems;
 
 	// read in the contents from *_ptr
@@ -36,42 +36,34 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size)
 	buffer.clear();
 
 	while(c < _size){
-		if(*_ptr == '\r'){
-			std::cout << "[RETURN]";
-			buffer.append("[RETURN]");
-		}
-		std::cout << *_ptr;
+
 		buffer.append(1, *_ptr);
-		c++;
-		*_ptr++;
-		/*
-		buffer.append(1, *_ptr);
+
 		if(*_ptr == '\r'){
-			//buffer.append(1, *_ptr);
-			//std::cout << "New line encountered" << std::endl;
-			//std::cout << buffer << " added to the list" << std::endl;
-			ivsList.push_back(buffer);
-			//std::cout << ivsList[listCounter];
+
+			//std::cout << buffer;
+
+			//ivsList.push_back(buffer);
+			ivsListItems.push_back({buffer, true});
+
 			listCounter++;
 			buffer.clear();
-			//*_ptr++;
-		} // if(*_ptr == '\r')
-		//buffer.append(1, *_ptr);
-		*_ptr++;
+		}
+
 		c++;
-		*/
+		*_ptr++;
+
+
 	} // while(c <= _size)
-	std::cout << buffer;
 
-	std::cout << std::endl;
-
-	/*
 	// print the entire list
-	std::cout << "Number of elements in the ivsList: " << ivsList.size() << std::endl;
-	for(int i = 0; i < (int)ivsList.size(); i++){
-		std::cout << ivsList[i] << std::endl;
-	}
-	*/
+	//std::cout << "Number of elements in the ivsList: " << ivsList.size() << std::endl;
+	std::cout << "Number of elements in the ivsListItems: " << ivsListItems.size() << std::endl;
+	for(int i = 0; i < (int)ivsListItems.size(); i++){
+		std::cout << ivsListItems[i].item;
+	};
+
+	std::cout << std::endl << "Number of items: " << listCounter << std::endl;
 
 	/*
 
