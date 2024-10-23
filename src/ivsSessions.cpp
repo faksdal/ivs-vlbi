@@ -10,6 +10,10 @@
 #include <iostream>
 #include "ivsSessions.h"
 
+struct ListItems{
+	std::string	item;
+	bool		visible;
+};
 
 
 ivsSessions::ivsSessions(const char* _ptr, unsigned long _size)
@@ -21,6 +25,7 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size)
 	// create the ivsList using the vector class
 	// this makes it easier to manage dynamic lists
 	std::vector<std::string>	ivsList;
+	std::vector<ListItems>		ivsListItems;
 
 	// read in the contents from *_ptr
 	// one item per line (search for the linefeeds)
@@ -28,9 +33,15 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size)
 	// present the list to the user, with filter options
 
 	std::cout << "Size of *_ptr: " << _size << std::endl;
+	buffer.clear();
 
 	while(c < _size){
+		if(*_ptr == '\r'){
+			std::cout << "[RETURN]";
+			buffer.append("[RETURN]");
+		}
 		std::cout << *_ptr;
+		buffer.append(1, *_ptr);
 		c++;
 		*_ptr++;
 		/*
@@ -50,6 +61,7 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size)
 		c++;
 		*/
 	} // while(c <= _size)
+	std::cout << buffer;
 
 	std::cout << std::endl;
 
