@@ -1,0 +1,14 @@
+## Master file format version 2.0           2022.11.01 CAD&CCT
+
+                         2024 MULTI-AGENCY SCHEDULE
+
+                     Last Updated - August 14, 2024 - CCT
+
+   SESSION      DATE     SESSION    DOY TIME   DUR                         STATIONS                        SKED CORR  STATUS  DBC  SUBM DEL
+     TYPE     yyyymmdd     CODE     ddd hh:mm  h:mm                                                                  yyyymmdd CODE      days
+--------------------------------------------------------------------------------------------------------------------------------------------
+|IVS-R1      |20240102|r11136      |  2|17:00|24:00|AgHtKkKvMaNsOnWz                                      |NASA|BONN|20240112|    |NASA|   9|
+|VGOS-OPS    |20240103|vo4003      |  3|12:00|24:00|GsK2MgOeOwSaWfWs -NnYj                                |NASA|VIEN|20240228|    |NASA|  55|
+--------------------------------------------------------------------------------------------------------------------------------------------
+|IVS-R4      |20240201|r41140      | 32|18:30|24:00|BdFtHtKkNsNtSvWzZc -HbKeNnUr                          |USNO|WASH|20240216|    |USNO|  14|
+## Master file format version 2.0           2022.11.01 CAD&CCT
