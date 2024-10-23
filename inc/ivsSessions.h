@@ -38,6 +38,7 @@ struct SessionList{
 	std::string		subm;
 	std::string		del;
 	bool			visible;
+	bool			highlighted;
 };
 
 
@@ -61,6 +62,7 @@ class ivsSessions{
 	std::string		buffer;
 
 	int				startIndex, endIndex;
+	int				columns, rows;
 
 	bool			_visible, intensives;
 
@@ -71,10 +73,15 @@ class ivsSessions{
 
 
 	// inline private functions
-	void	hideCursor(void) {std::cout << "\033[?25l";}
-	void	showCursor(void) {std::cout << "\033[?25h";}
+	void	hideCursor(void)			{ std::cout << "\033[?25l"; }
+	void	showCursor(void)			{ std::cout << "\033[?25h"; }
+	void	moveCursor(int _x, int _y)	{ std::cout << "\033[" << _y << ";" << _x << "H"; }
 
+	void	print(int _x, int _y, std::string _text);
+	void	print(int _x, int _y, int _number);
 	void	clearScreen(void);
+	void	terminalSize(void);
+
 	void	clearAllBuffers(void);
 	void	printHeaders(void);
 	void	printItemList(void);
