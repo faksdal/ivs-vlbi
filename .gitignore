@@ -1,6 +1,0 @@
-get-sessions.sh
-quickgit.sh
-
-./bin/*
-./obj/*.o
-.gitignore
