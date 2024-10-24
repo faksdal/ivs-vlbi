@@ -1,5 +1,5 @@
 get-sessions.sh
-quickhit.sh
+quickgit.sh
 
 bin/*
 obj/*.o

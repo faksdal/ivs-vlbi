@@ -9,33 +9,100 @@
 
 #include <vector>
 #include <iostream>
-//#include <signal.h>
+#include <termios.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include "ivsSessions.h"
 
 
 
+// Function to disable buffered input and echoing
+void ivsSessions::setRawMode(bool enable)
+{
+	static struct termios oldt, newt;
+
+    if(enable){
+    	tcgetattr(STDIN_FILENO, &oldt);				// Get current terminal settings
+    	newt = oldt;								// Copy to new settings
+    	newt.c_lflag &= ~(ICANON | ECHO);			// Disable buffered I/O and echo
+    	tcsetattr(STDIN_FILENO, TCSANOW, &newt);	// Apply new settings
+    }
+
+    else{
+    	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);	// Restore old settings
+    }
+}
+
+
+
+void ivsSessions::moveCursor(int _x, int _y)
+{
+	std::cout << "\033[" << _y << ";" << _x << "H" << std::flush;
+}
+
+
+
 void ivsSessions::run(void)
 {
-	// set up the screen
+	bool	quit = false;
+	char	ch;
+	char	seq[2];
+
+	setRawMode(true);
 	clearScreen();
-	hideCursor();
 	terminalSize();
 
-	//print(1, 33, "columns: ");
-	//print(10, 33, columns);
-	//print(13, 33, ", rows: ");
-	//print(21, 33, rows);
-	//print(1, 34, "Jon Leithe");
-
 	printHeaders();
+	setupSearchFields();
 	printSearchFields();
-	printItemList();
+	printItemList(0);
 
-	sleep(3);
-	showCursor();
-	sleep(3);
+	// position the cursor in the first search field
+	moveCursor(2, 3);
+
+	textColor = "\033[31;47m";
+
+	// Loop to catch and display keystrokes
+	while (!quit){
+		// Read one character from stdin
+		if (read(STDIN_FILENO, &ch, 1) < 0){
+			std::cerr << "Error reading input." << std::endl;
+			quit = true;
+			break;
+		}
+
+		switch(ch){
+			case '\x1b':	//process special key, 27 (0x1b) is an escape sequence
+							if(read(STDIN_FILENO, &seq[0], 1) < 0 || read(STDIN_FILENO, &seq[1], 1) < 0){
+								continue; // Read failed or not a complete escape sequence
+							}
+							if(seq[0] == '['){
+								switch (seq[1]){
+									case 'A':		std::cout << "Up arrow key pressed" << std::endl;
+													break;
+									case 'B':		std::cout << "Down arrow key pressed" << std::endl;
+													break;
+									case 'C':		std::cout << "Right arrow key pressed" << std::endl;
+													break;
+									case 'D':		std::cout << "Left arrow key pressed" << std::endl;
+													break;
+								}
+							}
+							break;
+			//case 27:
+			case 'q':		quit = true;
+							break;
+
+			default:		std::cout << textColor << ch << std::flush;
+							break;
+		}
+	}
+
+	//clearScreen();
+	moveCursor(1, listEndRow + 1);
+	setRawMode(false);
+	std::cout << "\033[0m" << std::endl;
+	//showCursor();
 }
 
 
@@ -67,16 +134,12 @@ void ivsSessions::printHeaders(void)
 	if(intensives){
 		print(1, 1, INTENSIVE_HEADING_1);
 		print(1, 2, INTENSIVE_HEADING_2);
-		//std::cout << INTENSIVE_HEADING_1 << std::endl;
-		//std::cout << INTENSIVE_HEADING_2 << std::endl;
 	}
 	else{
 		print(1, 1, NORMAL_HEADING_1);
 		print(1, 2, NORMAL_HEADING_2);
-		//std::cout << NORMAL_HEADING_1 << std::endl;
-		//std::cout << NORMAL_HEADING_2 << std::endl;
 	}
-	std::cout << std::endl;
+	//std::cout << std::endl;
 }
 
 
@@ -84,32 +147,150 @@ void ivsSessions::printHeaders(void)
 void ivsSessions::clearScreen(void)
 {
 	// Clear the terminal
-	std::cout << "\033[2J\033[1;1H";
+	std::cout << "\033[2J\033[1;1H" << std::flush;
 }
-
 
 
 void ivsSessions::printSearchFields(void)
 {
+	for(int i = 0; i < (int)searchFieldList.size(); i++){
+		print(searchFieldList[i].xLocation,
+			  searchFieldList[i].yLocation,
+			  searchFieldList[i].textColor + searchFieldList[i].searchText);
+	}
+
+}
+
+
+
+void ivsSessions::setupSearchFields(void)
+{
+	/*
+	struct SearchFields{
+		bool	active;
+		short	xLocation, yLocation, cursorLocation;
+
+		std::string	textColor;
+		std::string	searchText;
+	};
+
+	searchFieldList.push_back({bool, short, short, short, std::string, std::string});
+
+	*/
+	bool	_active = false;
+	short	_xLocation;
+	short	_yLocation = 3;
+	short	_cursorLocation = 0;
+
+
 	int	startx	= 0;
-	int	endx	= 0;
+	int	length	= (ivsListItems[0].sessionType.size() - 1);
 	int	index	= 0;
 
 	while(ivsListItems[0].sessionType[index] == '|')
 		index++;
-	startx = index;
+	startx = ++index;
 
 	//std::cout << "startx: " << startx << std::endl;
 
-	//print(2, 3, "Jon Leithe");
+	//std::string buffer, textColor;
 
-	//std::string	textColor;
-	/*
+	buffer.clear();
+	buffer.append(length, ' ');
+
 	textColor = "\033[31;47m";
-	std::cout << textColor;
-	std::cout << "Input field" << std::endl;
-	*/
 
+	//print(startx, 3, textColor + buffer);
+	_xLocation = startx;
+	searchFieldList.push_back({_active, _xLocation, _yLocation, _cursorLocation, textColor, buffer});
+
+	startx += length + 1;
+	length	= (ivsListItems[0].date.size() - 1);
+	buffer.clear();
+	buffer.append(length, ' ');
+	//print(startx, 3, textColor + buffer);
+	_xLocation = startx;
+	searchFieldList.push_back({_active, _xLocation, _yLocation, _cursorLocation, textColor, buffer});
+
+	startx += length + 1;
+	length	= (ivsListItems[0].sessionCode.size() - 1);
+	buffer.clear();
+	buffer.append(length, ' ');
+	//print(startx, 3, textColor + buffer);
+	_xLocation = startx;
+	searchFieldList.push_back({_active, _xLocation, _yLocation, _cursorLocation, textColor, buffer});
+
+	startx += length + 1;
+	length	= (ivsListItems[0].doy.size() - 1);
+	buffer.clear();
+	buffer.append(length, ' ');
+	//print(startx, 3, textColor + buffer);
+	_xLocation = startx;
+	searchFieldList.push_back({_active, _xLocation, _yLocation, _cursorLocation, textColor, buffer});
+
+	startx += length + 1;
+	length	= (ivsListItems[0].time.size() - 1);
+	buffer.clear();
+	buffer.append(length, ' ');
+	//print(startx, 3, textColor + buffer);
+	_xLocation = startx;
+	searchFieldList.push_back({_active, _xLocation, _yLocation, _cursorLocation, textColor, buffer});
+
+	startx += length + 1;
+	length	= (ivsListItems[0].dur.size() - 1);
+	buffer.clear();
+	buffer.append(length, ' ');
+	//print(startx, 3, textColor + buffer);
+	_xLocation = startx;
+	searchFieldList.push_back({_active, _xLocation, _yLocation, _cursorLocation, textColor, buffer});
+
+	startx += length + 1;
+	length	= (ivsListItems[0].includedStations.size() - 1);
+	buffer.clear();
+	buffer.append(length, ' ');
+	//print(startx, 3, textColor + buffer);
+	_xLocation = startx;
+	searchFieldList.push_back({_active, _xLocation, _yLocation, _cursorLocation, textColor, buffer});
+
+	startx += length + 1;
+	length	= (ivsListItems[0].sked.size() - 1);
+	buffer.clear();
+	buffer.append(length, ' ');
+	//print(startx, 3, textColor + buffer);
+	_xLocation = startx;
+	searchFieldList.push_back({_active, _xLocation, _yLocation, _cursorLocation, textColor, buffer});
+
+	startx += length + 1;
+	length	= (ivsListItems[0].corr.size() - 1);
+	buffer.clear();
+	buffer.append(length, ' ');
+	//print(startx, 3, textColor + buffer);
+	_xLocation = startx;
+	searchFieldList.push_back({_active, _xLocation, _yLocation, _cursorLocation, textColor, buffer});
+
+	startx += length + 1;
+	length	= (ivsListItems[0].status.size() - 1);
+	buffer.clear();
+	buffer.append(length, ' ');
+	//print(startx, 3, textColor + buffer);
+	_xLocation = startx;
+	searchFieldList.push_back({_active, _xLocation, _yLocation, _cursorLocation, textColor, buffer});
+
+	startx += length + 1;
+	length	= (ivsListItems[0].dbcCode.size() - 1);
+	buffer.clear();
+	buffer.append(length, ' ');
+	//print(startx, 3, textColor + buffer);
+	_xLocation = startx;
+	searchFieldList.push_back({_active, _xLocation, _yLocation, _cursorLocation, textColor, buffer});
+
+	startx += length + 1;
+	length	= (ivsListItems[0].subm.size() - 1);
+	buffer.clear();
+	buffer.append(length, ' ');
+	//print(startx, 3, textColor + buffer);
+	_xLocation = startx;
+	searchFieldList.push_back({_active, _xLocation, _yLocation, _cursorLocation, textColor, buffer});
 }
 
 
@@ -135,14 +316,15 @@ void ivsSessions::terminalSize(void)
 
 void ivsSessions::print(int _x, int _y, std::string _text)
 {
-	std::cout << "\033[" << _y << ";" << _x << "H" << _text << std::endl;
+	std::cout << "\033[" << _y << ";" << _x << "H" << _text << std::flush;
+	//std::cout << "\033[" << _y << ";" << _x << "H" << _text;
 }
 
 
 
 void ivsSessions::print(int _x, int _y, int _number)
 {
-	std::cout << "\033[" << _y << ";" << _x << "H" << _number << std::endl;
+	std::cout << "\033[" << _y << ";" << _x << "H" << _number << std::flush;
 }
 
 
@@ -156,16 +338,20 @@ void ivsSessions::print(int _x, int _y, int _number)
 //
 // TODO:
 // TODO:
-void ivsSessions::printItemList(void)
+void ivsSessions::printItemList(int _startItem)
 {
 	// "\033[Effects;Colours;Backgrounds;Extra colours m"
-	std::string	textColor;	// = "\033[33m";
+	//std::string	textColor;	// = "\033[33m";
 
-	ivsListItems[20].highlighted = true;
+	ivsListItems[_startItem].highlighted = true;
+
+	listStartRow = 4;
 
 	int x = 1;
-	int y = 4;
-	for(int i = 0; i < (int)ivsListItems.size(); i++){
+	int y = listStartRow;
+	//int y = 4;
+
+	for(int i = _startItem; i < (int)ivsListItems.size(); i++){
 		/*
 		if(i == 0){
 			textColor = "\033[30;102m";	//
@@ -180,8 +366,9 @@ void ivsSessions::printItemList(void)
 		else{
 			textColor = "\033[40;00m";		// white text, default background
 		}
-		print(x, y, textColor);
-		print(x, y, ivsListItems[i].sessionType
+		//print(x, y, textColor);
+		print(x, y, textColor
+				  + ivsListItems[i].sessionType
 				  + ivsListItems[i].date
 				  + ivsListItems[i].sessionCode
 				  + ivsListItems[i].doy
@@ -197,38 +384,22 @@ void ivsSessions::printItemList(void)
 				  + ivsListItems[i].del
 				  );
 		y++;
-		//x += ivsListItems[i].sessionType.size();
-		//print(x, 4, ivsListItems[i].date);
-		/*
-		std::cout	<< textColor
-					<< ivsListItems[i].sessionType
-					<< ivsListItems[i].date
-					<< ivsListItems[i].sessionCode
-					<< ivsListItems[i].doy
-					<< ivsListItems[i].time
-					<< ivsListItems[i].dur
-					<< ivsListItems[i].includedStations
-					<< ivsListItems[i].excludedStations
-					<< ivsListItems[i].sked
-					<< ivsListItems[i].corr
-					<< ivsListItems[i].status
-					<< ivsListItems[i].dbcCode
-					<< ivsListItems[i].subm
-					<< ivsListItems[i].del
-					<< std::endl;
-		*/
+
+		if(y > (rows - 4))
+			break;
 	}
-	//textColor = "\033[0m";
-	//std::cout << "\033[36mNumber of elements in the session list: " << ivsListItems.size() << std::endl;
 
-	//buffer.clear();
-	//buffer.append("\033[36mNumber of elements in the session list: ");
-	//print(1, (rows-3), buffer);
-	//print(41, (rows-3), ivsListItems.size());
+	if(y < (rows - 3)){
+		print(1, y, "\033[36mNumber of elements in the session list: ");
+		print(41, y, ivsListItems.size());
+	}
+	else{
+		print(1, (rows - 3), "\033[36mNumber of elements in the session list: ");
+		print(41, (rows - 3), ivsListItems.size());
+	}
+	listEndRow = y;
 
-	//buffer.append(ivsListItems.size());
-	//buffer.append(std::endl);
-	//print(1, (rows-1), buffer);
+	std::cout << ". Rows: " << rows << ", listStartRow: " << listStartRow << ", listEndRow: " << listEndRow << std::endl;
 }
 
 
@@ -400,6 +571,6 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size, bool _intensives
 
 ivsSessions::~ivsSessions()
 {
-	showCursor();
+	setRawMode(false);
 }
 

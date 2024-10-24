@@ -11,9 +11,7 @@
 //#include "fileoperations.h"
 //#include "sessionlist.h"
 #include <vector>
-/*
- *
- */
+
 
 #define INTENSIVE_HEADING_1	"   SESSION      DATE     SESSION    DOY TIME   DUR       STATIONS                             SKED CORR  STATUS  DBC  SUBM DEL"
 #define INTENSIVE_HEADING_2	"     TYPE     yyyymmdd     CODE     ddd hh:mm  h:mm                                                     yyyymmdd CODE      days"
@@ -43,6 +41,16 @@ struct SessionList{
 
 
 
+struct SearchFields{
+	bool	active;
+	short	xLocation, yLocation, cursorLocation;
+
+	std::string	textColor;
+	std::string	searchText;
+};
+
+
+
 class ivsSessions{
 
 	std::string		_sessionType;
@@ -59,32 +67,36 @@ class ivsSessions{
 	std::string		_dbcCode;
 	std::string		_subm;
 	std::string		_del;
-	std::string		buffer;
+	std::string		buffer, textColor;
 
 	int				startIndex, endIndex;
 	int				columns, rows;
+	int				listStartRow, listEndRow;
 
 	bool			_visible, intensives;
 
-	// create the ivsList using the vector class
-	// this makes it easier to manage dynamic lists
-	//std::vector<ListItems> ivsListItems;
-	std::vector<SessionList> ivsListItems;
+	std::vector<SessionList>	ivsListItems;
+	std::vector<SearchFields>	searchFieldList;
+
 
 
 	// inline private functions
 	void	hideCursor(void)			{ std::cout << "\033[?25l"; }
 	void	showCursor(void)			{ std::cout << "\033[?25h"; }
-	void	moveCursor(int _x, int _y)	{ std::cout << "\033[" << _y << ";" << _x << "H"; }
+	// std::cout << "\033[10;20H";     // Move cursor to row 10, column 20
+
 
 	void	print(int _x, int _y, std::string _text);
 	void	print(int _x, int _y, int _number);
 	void	clearScreen(void);
+	void	moveCursor(int _x, int _y);
 	void	terminalSize(void);
+	void	setRawMode(bool enable);
 
 	void	clearAllBuffers(void);
 	void	printHeaders(void);
-	void	printItemList(void);
+	void	printItemList(int _startItem);
+	void	setupSearchFields(void);
 	void	printSearchFields(void);
 
 public:
