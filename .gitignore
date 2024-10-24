@@ -1,5 +1,6 @@
 get-sessions.sh
 quickgit.sh
 
-bin/*
-obj/*.o
+./bin/*
+./obj/*.o
+.gitignore
