@@ -89,7 +89,7 @@ void ivsSessions::run(void)
 								}
 							}
 							break;
-			//case 27:
+
 			case 'q':		quit = true;
 							break;
 
