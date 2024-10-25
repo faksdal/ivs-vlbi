@@ -6,19 +6,63 @@
  */
 #pragma GCC diagnostic ignored "-Wunused-value" *_ptr
 
-
+#include <cstdlib>
 #include <vector>
 #include <iostream>
-#include <termios.h>
+
+#include <ctype.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
+
 #include "ivsSessions.h"
 
 
 
-// Function to disable buffered input and echoing
-void ivsSessions::setRawMode(bool enable)
+void ivsSessions::die(const char *s)
 {
+	perror(s);
+	exit(1);
+}
+
+
+
+void ivsSessions::disableRawMode(void)
+{
+	//tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+	if(tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
+		die("tcsetattr");
+
+}
+
+
+
+// Function to disable buffered input and echoing
+void ivsSessions::enableRawMode(void)
+{
+	//tcgetattr(STDIN_FILENO, &orig_termios);
+	if(tcgetattr(STDIN_FILENO, &orig_termios) == -1)
+		die("tcgetattr");
+
+	// diable rawmode upon exit, as a courtesy to the user
+	//atexit(disableRawMode);
+
+
+	struct termios raw = orig_termios;
+
+	raw.c_iflag		&= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+	raw.c_oflag		&= ~(OPOST);
+	raw.c_cflag		|= (CS8);
+	raw.c_lflag		&= ~(ECHO | ICANON | IEXTEN | ISIG);
+	//raw.c_cc[VMIN]	= 0;
+	//raw.c_cc[VTIME]	= 1;
+
+	//tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+	if(tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1)
+		die("tcsetattr");
+	/*
 	static struct termios oldt, newt;
 
     if(enable){
@@ -31,6 +75,7 @@ void ivsSessions::setRawMode(bool enable)
     else{
     	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);	// Restore old settings
     }
+    */
 }
 
 
@@ -42,20 +87,47 @@ void ivsSessions::moveCursor(int _x, int _y)
 
 
 
+char ivsSessions::readKey(void)
+{
+	int nread;
+	char ch;
+
+	while ((nread = read(STDIN_FILENO, &ch, 1)) != 1) {
+		if (nread == -1 && errno != EAGAIN)
+			die("read");
+	}
+	return ch;
+}
+
+
+
+void ivsSessions::processKeypress(void)
+{
+	char c = readKey();
+
+	switch (c) {
+		case CTRL_KEY('q'):		disableRawMode();
+								exit(0);
+								break;
+	}
+}
+
+
+
 void ivsSessions::run(void)
 {
-	bool	quit = false;
-	char	ch;
-	char	seq[2];
+	//bool	quit = false;
+	//char	c;
+	//char	seq[2];
 
-	setRawMode(true);
+	enableRawMode();
 	clearScreen();
 	terminalSize();
 
-	printHeaders();
-	setupSearchFields();
-	printSearchFields();
-	printItemList(0);
+	//printHeaders();
+	//setupSearchFields();
+	//printSearchFields();
+	//printItemList(0);
 
 	// position the cursor in the first search field
 	moveCursor(2, 3);
@@ -63,46 +135,33 @@ void ivsSessions::run(void)
 	textColor = "\033[31;47m";
 
 	// Loop to catch and display keystrokes
-	while (!quit){
-		// Read one character from stdin
-		if (read(STDIN_FILENO, &ch, 1) < 0){
-			std::cerr << "Error reading input." << std::endl;
-			quit = true;
+	while (1){
+
+		refreshScreen();
+		processKeypress();
+		/*
+		c = '\0';
+		if(read(STDIN_FILENO, &c, 1) == -1 && errno != EAGAIN)
+			die("read");
+
+		if(iscntrl(c)) {
+			std::cout << "Control key - " << (int)c << "\r\n"; //std::endl;
+			//printf("%d\r\n", c);
+		}
+		else{
+			std::cout << "Regular key - " << (int)c << "('" << (char)c << "')\r\n";// << std::endl;
+			//printf("%d ('%c')\r\n", c, c);
+		}
+		if(c == CTRL_KEY('q'))
 			break;
-		}
-
-		switch(ch){
-			case '\x1b':	//process special key, 27 (0x1b) is an escape sequence
-							if(read(STDIN_FILENO, &seq[0], 1) < 0 || read(STDIN_FILENO, &seq[1], 1) < 0){
-								continue; // Read failed or not a complete escape sequence
-							}
-							if(seq[0] == '['){
-								switch (seq[1]){
-									case 'A':		std::cout << "Up arrow key pressed" << std::endl;
-													break;
-									case 'B':		std::cout << "Down arrow key pressed" << std::endl;
-													break;
-									case 'C':		std::cout << "Right arrow key pressed" << std::endl;
-													break;
-									case 'D':		std::cout << "Left arrow key pressed" << std::endl;
-													break;
-								}
-							}
-							break;
-
-			case 'q':		quit = true;
-							break;
-
-			default:		std::cout << textColor << ch << std::flush;
-							break;
-		}
+		*/
 	}
 
+
 	//clearScreen();
-	moveCursor(1, listEndRow + 1);
-	setRawMode(false);
+	//moveCursor(1, listEndRow + 1);
+	disableRawMode();
 	std::cout << "\033[0m" << std::endl;
-	//showCursor();
 }
 
 
@@ -144,10 +203,19 @@ void ivsSessions::printHeaders(void)
 
 
 
+void ivsSessions::refreshScreen(void)
+{
+	  write(STDOUT_FILENO, "\x1b[2J", 4);
+	  write(STDOUT_FILENO, "\x1b[H", 3);
+}
+
+
+
 void ivsSessions::clearScreen(void)
 {
 	// Clear the terminal
-	std::cout << "\033[2J\033[1;1H" << std::flush;
+	//std::cout << "\033[2J\033[1;1H" << std::flush;
+	write(STDOUT_FILENO, "\x1b[2J", 4);
 }
 
 
@@ -571,6 +639,8 @@ ivsSessions::ivsSessions(const char* _ptr, unsigned long _size, bool _intensives
 
 ivsSessions::~ivsSessions()
 {
-	setRawMode(false);
+	std::cout << "Destructor called!\n\r";
+
+	disableRawMode();
 }
 

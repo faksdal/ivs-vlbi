@@ -11,12 +11,15 @@
 //#include "fileoperations.h"
 //#include "sessionlist.h"
 #include <vector>
+#include <termios.h>
 
 
 #define INTENSIVE_HEADING_1	"   SESSION      DATE     SESSION    DOY TIME   DUR       STATIONS                             SKED CORR  STATUS  DBC  SUBM DEL"
 #define INTENSIVE_HEADING_2	"     TYPE     yyyymmdd     CODE     ddd hh:mm  h:mm                                                     yyyymmdd CODE      days"
 #define NORMAL_HEADING_1	"   SESSION      DATE     SESSION    DOY TIME   DUR                         STATIONS                        SKED CORR  STATUS  DBC  SUBM DEL"
 #define NORMAL_HEADING_2	"     TYPE     yyyymmdd     CODE     ddd hh:mm  h:mm                                                                  yyyymmdd CODE      days"
+
+#define CTRL_KEY(k) ((k) & 0x1f)
 
 
 
@@ -78,6 +81,8 @@ class ivsSessions{
 	std::vector<SessionList>	ivsListItems;
 	std::vector<SearchFields>	searchFieldList;
 
+	struct termios orig_termios;
+
 
 
 	// inline private functions
@@ -91,7 +96,12 @@ class ivsSessions{
 	void	clearScreen(void);
 	void	moveCursor(int _x, int _y);
 	void	terminalSize(void);
-	void	setRawMode(bool enable);
+	void	enableRawMode(void);
+	void	disableRawMode(void);
+	void	die(const char *s);
+	char	readKey(void);
+	void	processKeypress(void);
+	void	refreshScreen(void);
 
 	void	clearAllBuffers(void);
 	void	printHeaders(void);
